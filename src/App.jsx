@@ -189,21 +189,23 @@ export default function PortalNavigasiKelas() {
           100% { background-position: 0% 50%; }
         }
         .floating-rainbow-water {
+          /* Gradasi pelangi dipertegas dengan opasitas warna yang lebih tinggi */
           background: linear-gradient(
             -45deg, 
-            rgba(239, 68, 68, 0.2),  /* Soft Merah */
-            rgba(234, 179, 8, 0.2),  /* Soft Kuning */
-            rgba(34, 197, 94, 0.2),  /* Soft Hijau */
-            rgba(59, 130, 246, 0.2), /* Soft Biru */
-            rgba(168, 85, 247, 0.2)  /* Soft Ungu */
+            rgba(239, 68, 68, 0.4),  /* Merah */
+            rgba(249, 115, 22, 0.4), /* Oranye */
+            rgba(234, 179, 8, 0.4),  /* Kuning */
+            rgba(34, 197, 94, 0.4),  /* Hijau */
+            rgba(59, 130, 246, 0.4), /* Biru */
+            rgba(168, 85, 247, 0.4)  /* Ungu */
           );
-          background-size: 300% 300%;
-          animation: water-flow 8s ease infinite;
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          /* Base transparan agar gradasi terlihat jelas namun teks tetap terbaca */
-          background-color: rgba(255, 255, 255, 0.35);
-          box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.7), inset 0 -2px 10px rgba(0, 0, 0, 0.02);
+          background-size: 400% 400%; /* Diperbesar agar transisi warna lebih mulus */
+          animation: water-flow 12s ease infinite; /* Diperlambat sedikit agar lebih elegan */
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          /* Base transparan dikurangi agar warna gradasi lebih dominan */
+          background-color: rgba(255, 255, 255, 0.2);
+          box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.5), inset 0 -2px 10px rgba(0, 0, 0, 0.05);
         }
 
         /* 4. Cahaya Emas Berpendar Keluar */
@@ -222,7 +224,8 @@ export default function PortalNavigasiKelas() {
           }
         }
         .golden-aura {
-          animation: golden-glow 3s ease-in-out infinite;
+          /* Animasi diperlambat 50% (dari 3s menjadi 6s) */
+          animation: golden-glow 6s ease-in-out infinite;
           border: 1px solid rgba(250, 204, 21, 0.5);
         }
       `}</style>
