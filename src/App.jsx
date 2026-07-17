@@ -1,292 +1,385 @@
-// ... existing code ...
-        /* ANIMASI KARTU DIKLIK (ZOOM OUT) */
-import React, { useState } from 'react';
-import { Search, ExternalLink } from 'lucide-react';
-
-const classData = [
-  { 
-    id: 1, 
-    className: "Kelas 1", 
-    label: "1",
-    desc: "LHM, Tahfidz, Tahsin & Grafik Akademik", 
-    gradient: "from-blue-500 to-cyan-400",
-    link: "https://docs.google.com/spreadsheets/d/1ni-fA-2z6sDIjOV0WojK3KjOnBk2D9mvwqCSLbMVhqU/edit?usp=sharing"
-  },
-  { 
-    id: 2, 
-    className: "Kelas 2A", 
-    label: "2A",
-    desc: "LHM, Tahfidz, Tahsin & Grafik Akademik", 
-    gradient: "from-purple-500 to-pink-400",
-    link: "https://docs.google.com/spreadsheets/d/1ZRQk2OniU9a6py1JlNlgvKRnQlnu74XvD4oGf5mDc30/edit?usp=sharing"
-  },
-  { 
-    id: 3, 
-    className: "Kelas 2B", 
-    label: "2B",
-    desc: "LHM, Tahfidz, Tahsin & Grafik Akademik", 
-    gradient: "from-pink-500 to-rose-400",
-    link: "https://docs.google.com/spreadsheets/d/1mPPXLgRUi3udMbkSyEwJJha857IRQqXQNEVvhGG1Bxo/edit?usp=sharing"
-  },
-  { 
-    id: 4, 
-    className: "Kelas 3", 
-    label: "3",
-    desc: "LHM, Tahfidz, Tahsin & Grafik Akademik", 
-    gradient: "from-emerald-500 to-teal-400",
-    link: "https://docs.google.com/spreadsheets/d/1-xj70IwyCD5YAvnf2Icimu4D6qRsp-zdL2mnDFRvwRI/edit?usp=sharing"
-  },
-  { 
-    id: 5, 
-    className: "Kelas 4", 
-    label: "4",
-    desc: "LHM, Tahfidz, Tahsin & Grafik Akademik", 
-    gradient: "from-amber-500 to-orange-400",
-    link: "https://docs.google.com/spreadsheets/d/1cv2W0S-0XZPJMoS_XqNlnowChGp9wODd0SCdxIu9bek/edit?usp=sharing"
-  },
-  { 
-    id: 6, 
-    className: "Kelas 5", 
-    label: "5",
-    desc: "LHM, Tahfidz, Tahsin & Grafik Akademik", 
-    gradient: "from-red-500 to-rose-500",
-    link: "https://docs.google.com/spreadsheets/d/1CTR3F1mqzcTMYppMJH68id3lM8T5ofMPfPCmhPUVMk4/edit?usp=sharing"
-  },
-  { 
-    id: 7, 
-    className: "Kelas 6", 
-    label: "6",
-    desc: "LHM, Tahfidz, Tahsin & Grafik Akademik", 
-    gradient: "from-indigo-500 to-violet-500",
-    link: "https://docs.google.com/spreadsheets/d/13ylW9o1lZ79WoFyeZqngrmbZCYXvey7L5LOnzni03oc/edit?usp=sharing"
-  }
-];
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function PortalKelas() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [clickedCard, setClickedCard] = useState(null); // Menyimpan ID kartu yang sedang diklik
+const [searchQuery, setSearchQuery] = useState('');
+const canvasRef = useRef(null);
 
-  // Filter kelas berdasarkan teks pencarian
-  const filteredClasses = classData.filter(cls => 
-    cls.className.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+// MESIN PARTIKEL CANVAS (Latar Belakang Geometris Cerah & Kalem)
+useEffect(() => {
+const canvas = canvasRef.current;
+const ctx = canvas.getContext('2d');
+let animationFrameId;
 
-  return (
-    <div className="min-h-screen bg-[#f4f7fb] relative overflow-hidden font-sans selection:bg-sky-200">
-      
-      <style dangerouslySetInnerHTML={{__html: `
-        /* ANIMASI ROTASI GARIS DI SEARCH BAR */
-        @keyframes spin-slow {
-          100% { transform: rotate(360deg); }
-        }
-        .spin-slow {
-          animation: spin-slow 4s linear infinite;
-        }
+// Warna-warna pastel yang cerah dan segar untuk pagi/siang hari
+const colors = ['#38bdf8', '#818cf8', '#34d399', '#fbbf24', '#f472b6'];
+let particles = [];
 
-        /* ANIMASI BENTUK GEOMETRIS DI LATAR BELAKANG */
-        @keyframes float-shape {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-40px) rotate(45deg); }
-        }
+const resizeCanvas = () => {
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+};
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
-        /* ANIMASI GRADASI PELANGI (AIR MENGAMBANG) */
-        @keyframes water-flow {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        .floating-rainbow-water {
-          /* Latar pelangi yang utuh dalam 1 kartu dengan warna pastel */
-          background: linear-gradient(
-            120deg, 
-            rgba(255, 182, 193, 0.5) 0%,   /* Soft Pink */
-            rgba(255, 218, 185, 0.5) 20%,  /* Peach */
-            rgba(255, 255, 224, 0.5) 40%,  /* Light Yellow */
-            rgba(152, 251, 152, 0.5) 60%,  /* Pale Green */
-            rgba(173, 216, 230, 0.5) 80%,  /* Light Blue */
-            rgba(221, 160, 221, 0.5) 100%  /* Plum */
-          );
-          background-size: 150% 150%;
-          animation: water-flow 20s ease-in-out infinite;
-        }
-        
-        /* LAPISAN PUTIH TRANSPARAN UNTUK KONTRAST TEKS */
-        .glass-overlay {
-          background-color: rgba(255, 255, 255, 0.7); /* Putih transparan pekat */
-          box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
-          backdrop-filter: blur(4px);
-        }
+class Particle {
+constructor() {
+this.x = Math.random() * canvas.width;
+this.y = Math.random() * canvas.height;
+// Kecepatan sangat lambat agar kalem
+this.vx = (Math.random() - 0.5) * 0.4;
+this.vy = (Math.random() - 0.5) * 0.4;
+this.size = Math.random() * 10 + 5;
+this.color = colors[Math.floor(Math.random() * colors.length)];
+this.shape = Math.floor(Math.random() * 3); // 0: Lingkaran, 1: Segitiga, 2: Kotak
+this.rotation = Math.random() * Math.PI * 2;
+this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+}
 
-        /* ANIMASI CAHAYA EMAS (AURA BORDER) */
-        @keyframes golden-glow {
-          0%, 100% { box-shadow: 0 0 10px rgba(250, 204, 21, 0.2), 0 0 20px rgba(250, 204, 21, 0.1); }
-          50% { box-shadow: 0 0 25px rgba(250, 204, 21, 0.6), 0 0 40px rgba(250, 204, 21, 0.3); }
-        }
-        .golden-aura {
-          animation: golden-glow 6s ease-in-out infinite;
-        }
+update() {
+this.x += this.vx;
+this.y += this.vy;
+this.rotation += this.rotationSpeed;
 
-        /* ANIMASI MELOMPAT (SOFT BOUNCE) UNTUK ANGKA */
-        @keyframes soft-bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-12px); }
-        }
-        .animate-soft-bounce {
-          animation-name: soft-bounce;
-          animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          animation-iteration-count: infinite;
-        }
+if (this.x < -50) this.x = canvas.width + 50;
+if (this.x > canvas.width + 50) this.x = -50;
+if (this.y < -50) this.y = canvas.height + 50;
+if (this.y > canvas.height + 50) this.y = -50;
+}
 
-        /* ANIMASI KARTU DIKLIK (ZOOM IN/MEMBESAR) */
-       .animate-zoom-out {
-          /* Durasi animasi diubah menjadi 1 detik (1s) agar sinkron dengan delay klik */
-         animation: zoom-into-screen 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-         z-index: 50; /* Membawa kartu ke depan */
+draw() {
+ctx.save();
+ctx.translate(this.x, this.y);
+ctx.rotate(this.rotation);
+// Transparansi bentuk ditingkatkan sedikit agar lebih terlihat dibanding background
+ctx.globalAlpha = 0.25; 
+ctx.fillStyle = this.color;
+
+ctx.beginPath();
+if (this.shape === 0) {
+// Lingkaran
+ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+} else if (this.shape === 1) {
+// Segitiga
+ctx.moveTo(0, -this.size);
+ctx.lineTo(this.size, this.size);
+ctx.lineTo(-this.size, this.size);
+} else {
+// Kotak
+ctx.rect(-this.size, -this.size, this.size * 2, this.size * 2);
+}
+ctx.closePath();
+ctx.fill();
+ctx.restore();
+
+// Garis penghubung tipis antar elemen yang berdekatan
+for (let j = 0; j < particles.length; j++) {
+const p2 = particles[j];
+if (this === p2) continue;
+
+const dx = this.x - p2.x;
+const dy = this.y - p2.y;
+const distance = Math.sqrt(dx * dx + dy * dy);
+
+if (distance < 150) {
+ctx.beginPath();
+ctx.strokeStyle = this.color;
+ctx.globalAlpha = 0.05 * (1 - (distance / 150));
+ctx.lineWidth = 1;
+ctx.moveTo(this.x, this.y);
+ctx.lineTo(p2.x, p2.y);
+ctx.stroke();
+ctx.globalAlpha = 1.0;
+}
+}
+}
+}
+
+for (let i = 0; i < 40; i++) {
+particles.push(new Particle());
+}
+
+const animate = () => {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+for (let i = 0; i < particles.length; i++) {
+particles[i].update();
+particles[i].draw();
+}
+animationFrameId = requestAnimationFrame(animate);
+};
+
+animate();
+return () => {
+window.removeEventListener('resize', resizeCanvas);
+cancelAnimationFrame(animationFrameId);
+};
+}, []);
+
+// DATA KELAS DENGAN LABEL ANGKA UNIK
+const classData = [
+{ 
+id: '1', 
+name: 'Kelas 1', 
+link: 'https://docs.google.com/spreadsheets/d/1ni-fA-2z6sDIjOV0WojK3KjOnBk2D9mvwqCSLbMVhqU/edit?usp=sharing', 
+color: 'from-sky-400 to-blue-600',
+hex: '#0284c7',
+label: '1' 
+},
+{ 
+id: '2a', 
+name: 'Kelas 2A', 
+link: 'https://docs.google.com/spreadsheets/d/1ZRQk2OniU9a6py1JlNlgvKRnQlnu74XvD4oGf5mDc30/edit?usp=sharing', 
+color: 'from-pink-400 to-rose-600',
+hex: '#e11d48',
+label: '2A' 
+},
+{ 
+id: '2b', 
+name: 'Kelas 2B', 
+link: 'https://docs.google.com/spreadsheets/d/1mPPXLgRUi3udMbkSyEwJJha857IRQqXQNEVvhGG1Bxo/edit?usp=sharing', 
+color: 'from-purple-400 to-fuchsia-600',
+hex: '#c026d3',
+label: '2B' 
+},
+{ 
+id: '3', 
+name: 'Kelas 3', 
+link: 'https://docs.google.com/spreadsheets/d/1-xj70IwyCD5YAvnf2Icimu4D6qRsp-zdL2mnDFRvwRI/edit?usp=sharing', 
+color: 'from-emerald-400 to-green-600',
+hex: '#16a34a',
+label: '3' 
+},
+{ 
+id: '4', 
+name: 'Kelas 4', 
+link: 'https://docs.google.com/spreadsheets/d/1cv2W0S-0XZPJMoS_XqNlnowChGp9wODd0SCdxIu9bek/edit?usp=sharing', 
+color: 'from-amber-400 to-orange-600',
+hex: '#ea580c',
+label: '4' 
+},
+{ 
+id: '5', 
+name: 'Kelas 5', 
+link: 'https://docs.google.com/spreadsheets/d/1CTR3F1mqzcTMYppMJH68id3lM8T5ofMPfPCmhPUVMk4/edit?usp=sharing', 
+color: 'from-indigo-400 to-blue-700',
+hex: '#4338ca',
+label: '5' 
+},
+{ 
+id: '6', 
+name: 'Kelas 6', 
+link: 'https://docs.google.com/spreadsheets/d/13ylW9o1lZ79WoFyeZqngrmbZCYXvey7L5LOnzni03oc/edit?usp=sharing', 
+color: 'from-red-400 to-red-600',
+hex: '#dc2626',
+label: '6' 
+}
+];
+
+const filteredClasses = classData.filter((cls) =>
+cls.name.toLowerCase().includes(searchQuery.toLowerCase())
+);
+
+return (
+<div className="relative min-h-screen font-sans text-slate-800 bg-slate-50 overflow-hidden">
+
+{/* --- CUSTOM CSS LENGKAP --- */}
+<style>{`
+       /* 1. Animasi Ripple Logo */
+       @keyframes ripple-pulse {
+         0% { transform: scale(0.8); opacity: 0.2; }
+         100% { transform: scale(2.5); opacity: 0; }
        }
-        
-       @keyframes zoom-into-screen {
-// ... existing code ...
-          0% { transform: scale(1); opacity: 1; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-          20% { transform: scale(0.95); opacity: 1; } /* Efek tertekan ke dalam sedikit */
-          100% { transform: scale(1.4); opacity: 0; box-shadow: 0 25px 50px -12px rgba(250, 204, 21, 0.8); } /* Membesar dan memudar ke layar */
-        }
-      `}} />
+       .ripple-ring {
+         position: absolute;
+         border-radius: 50%;
+         animation: ripple-pulse 4s cubic-bezier(0.1, 0.7, 1, 0.1) infinite;
+       }
 
-      {/* BACKGROUND DEKORASI GEOMETRIS */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Lingkaran 1 */}
-        <div className="absolute top-[10%] left-[5%] w-32 h-32 rounded-full border-4 border-sky-100 opacity-60" style={{animation: 'float-shape 12s ease-in-out infinite'}} />
-        {/* Segitiga 1 (dibuat dengan clip-path) */}
-        <div className="absolute top-[30%] right-[10%] w-24 h-24 bg-rose-100 opacity-50" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', animation: 'float-shape 15s ease-in-out infinite 2s'}} />
-        {/* Kotak 1 */}
-        <div className="absolute bottom-[20%] left-[15%] w-20 h-20 bg-emerald-100 opacity-50 rounded-2xl rotate-12" style={{animation: 'float-shape 14s ease-in-out infinite 1s'}} />
-        {/* Lingkaran 2 */}
-        <div className="absolute top-[60%] right-[25%] w-40 h-40 rounded-full border-[6px] border-amber-100 opacity-50" style={{animation: 'float-shape 18s ease-in-out infinite 3s'}} />
-        {/* Segitiga 2 */}
-        <div className="absolute bottom-[10%] right-[5%] w-28 h-28 bg-purple-100 opacity-50 rotate-45" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', animation: 'float-shape 16s ease-in-out infinite 0.5s'}} />
-      </div>
+       /* 2. Animasi Garis Kotak Pencarian (Lebih Terang & Solid) */
+       @keyframes spin-border {
+         0% { transform: rotate(0deg); }
+         100% { transform: rotate(360deg); }
+       }
+       .spin-container {
+         position: absolute;
+         top: -50%;
+         left: -50%;
+         width: 200%;
+         height: 200%;
+         background: conic-gradient(from 0deg, transparent 40%, var(--glow-color) 100%);
+         animation: spin-border 5s linear infinite;
+         z-index: 0;
+       }
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-        
-        {/* HEADER */}
-        <div className="text-center mb-16 relative">
-          <div className="inline-block relative">
-            <div className="absolute -inset-4 bg-gradient-to-r from-sky-400 to-indigo-500 rounded-full blur-xl opacity-20 animate-pulse"></div>
-            <img 
-              src="https://siakad.sdyaumifatimah.sch.id/logo_yaumi.png" 
-              alt="Logo SD Yaumi Fatimah" 
-              className="w-24 h-24 mx-auto mb-6 relative z-10 drop-shadow-xl rounded-full border-2 border-white bg-white p-1"
-            />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-800 tracking-tight mb-3">
-            Laporan Akademik
-          </h1>
-          <p className="text-lg md:text-xl text-sky-600 font-semibold tracking-wide uppercase">
-            SD Yaumi Fatimah Kudus
-          </p>
-        </div>
+       /* 3. Latar Kartu Transparan Pelangi (Soft Pastel Rainbow) */
+       @keyframes water-flow {
+         0% { background-position: 0% 50%; }
+         50% { background-position: 100% 50%; }
+         100% { background-position: 0% 50%; }
+       }
+       .floating-rainbow-water {
+         /* Latar putih dasar sedikit kuat agar teks tetap terbaca jelas */
+         background-color: rgba(255, 255, 255, 0.7); 
+         /* Gradasi pelangi pastel dengan transparansi tinggi (opacity 0.15 - 0.2) */
+         background-image: linear-gradient(135deg, 
+           rgba(252, 165, 165, 0.2) 0%,   /* Soft Red */
+           rgba(253, 224, 71, 0.15) 20%,  /* Soft Yellow */
+           rgba(134, 239, 172, 0.2) 40%,  /* Soft Green */
+           rgba(147, 197, 253, 0.2) 60%,  /* Soft Blue */
+           rgba(196, 181, 253, 0.2) 80%,  /* Soft Purple */
+           rgba(252, 165, 165, 0.2) 100%  /* Soft Red loop */
+         );
+         background-size: 150% 150%;
+         /* Sangat diperlambat (35 detik) agar pergerakan air sangat rileks */
+         animation: water-flow 35s ease-in-out infinite; 
+         backdrop-filter: blur(16px);
+         -webkit-backdrop-filter: blur(16px);
+         box-shadow: inset 0 2px 10px rgba(255,255,255,0.8);
+       }
 
-        {/* SEARCH BAR */}
-        <div className="max-w-2xl mx-auto mb-16 relative group">
-          <div className="absolute -inset-0 bg-gradient-to-r from-sky-400 via-indigo-500 to-sky-400 rounded-2xl opacity-60 group-focus-within:opacity-100 blur transition duration-500 group-hover:duration-200 spin-slow"></div>
-          {/* Ketebalan garis outline diatur melalui padding kontainer ini (p-[2.5px]) */}
-          <div className="relative bg-white rounded-2xl p-[2.5px] shadow-md group-hover:shadow-lg transition-shadow">
-            <div className="relative flex items-center bg-white rounded-[14px] overflow-hidden px-4 py-3">
-              <Search className="w-6 h-6 text-slate-400 group-focus-within:text-sky-600 transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Cari kelas..." 
-                className="w-full pl-4 pr-4 py-2 text-slate-800 font-semibold placeholder-slate-400 bg-transparent border-none outline-none focus:ring-0 text-lg"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
+       /* 4. Cahaya Emas Luar Kartu (Golden Aura) */
+       @keyframes golden-glow {
+         0%, 100% { box-shadow: 0 0 10px 0 rgba(250, 204, 21, 0); }
+         50% { box-shadow: 0 0 30px 10px rgba(250, 204, 21, 0.35); }
+       }
+       .golden-aura {
+         /* Animasi diperlambat secara drastis (12 detik per denyut) */
+         animation: golden-glow 12s ease-in-out infinite;
+         border: 1px solid rgba(250, 204, 21, 0.4);
+       }
 
-        {/* GRID CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+       /* 5. Animasi Angka Melompat (Soft Bounce) */
+       @keyframes soft-bounce {
+         0%, 100% { transform: translateY(0); }
+         50% { transform: translateY(-12px); }
+       }
+     `}</style>
+
+{/* CANVAS BACKGROUND */}
+<canvas 
+ref={canvasRef} 
+className="fixed inset-0 z-0 pointer-events-none"
+style={{ width: '100vw', height: '100vh' }}
+/>
+
+{/* --- CONTENT LAYER --- */}
+<div className="relative z-10 max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+
+{/* Header Section */}
+<div className="text-center mb-16 flex flex-col items-center mt-8">
+<div className="relative flex justify-center items-center mb-8 w-28 h-28">
+<div className="ripple-ring w-full h-full border border-sky-300" style={{ animationDelay: '0s' }}></div>
+<div className="ripple-ring w-full h-full border border-pink-300" style={{ animationDelay: '1.3s' }}></div>
+<div className="ripple-ring w-full h-full border border-amber-300" style={{ animationDelay: '2.6s' }}></div>
+
+<div className="relative z-10 bg-white p-3 rounded-full shadow-lg border-2 border-white">
+<img src="/logo.png" alt="Logo SD Yaumi Fatimah Kudus" className="w-24 h-24 object-contain rounded-full" />
+</div>
+</div>
+<h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl text-slate-800 drop-shadow-sm mb-2">
+Laporan Akademik
+</h1>
+<p className="mt-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-500 via-indigo-500 to-pink-500 tracking-widest uppercase">
+SD Yaumi Fatimah Kudus
+</p>
+</div>
+
+{/* Search Bar - Garis Luar Dipertebal & Lebih Terang */}
+<div className="max-w-2xl mx-auto mb-16">
+<div className="relative group overflow-hidden rounded-2xl p-[3px] shadow-md hover:shadow-lg transition-shadow duration-300">
+{/* Opasitas lebih tebal (60%) agar garis biru jelas terlihat */}
+<div className="spin-container opacity-60 group-focus-within:opacity-100 transition-opacity duration-500" style={{ '--glow-color': '#0ea5e9' }}></div>
+
+<div className="relative z-10 flex items-center bg-white rounded-[13px] w-full h-full">
+<div className="pl-5 flex items-center pointer-events-none">
+<svg className="h-6 w-6 text-slate-400 group-focus-within:text-sky-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+</svg>
+</div>
+<input
+type="text"
+className="block w-full pl-4 pr-5 py-4 bg-transparent border-none text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-0 font-semibold text-lg"
+placeholder="Cari kelas..."
+value={searchQuery}
+onChange={(e) => setSearchQuery(e.target.value)}
+/>
+</div>
+</div>
+</div>
+
+{/* Grid Cards Section */}
+<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 {filteredClasses.length > 0 ? (
 filteredClasses.map((cls, index) => (
 <a
-@@ -16,15 +209,74 @@
+key={cls.id}
+href={cls.link}
 target="_blank"
 rel="noopener noreferrer"
-onClick={(e) => {
-                  e.preventDefault(); // Mencegah browser membuka link seketika
-                  setClickedCard(cls.id);
-                  e.preventDefault(); // Mencegah pindah halaman seketika
-                  setClickedCard(cls.id); // Memicu animasi
-
-                  // Jeda 1000ms (1 detik) agar animasi "membesar" selesai dengan utuh, lalu buka link
-                  // Menahan selama 1 detik (1000ms) agar animasi zoom selesai
-setTimeout(() => {
-window.open(cls.link, '_blank');
-                    setClickedCard(null); // Reset agar kartu kembali normal saat user kembali ke tab ini
-                    setClickedCard(null); // Reset state agar kartu kembali normal saat user kembali ke tab ini
-}, 1000);
+/* 1. KELAS AURA EMAS DENGAN DELAY ACAK AGAR TIDAK SINKRON */
+className="group relative rounded-[24px] block transition-transform duration-500 hover:-translate-y-2 hover:shadow-xl golden-aura"
+style={{ 
+animationDelay: `-${index * 2.7}s`,
 }}
-                /* 1. KELAS AURA EMAS DENGAN DELAY ACAK AGAR TIDAK SINKRON */
-                /* EFEK AURA EMAS DENGAN DELAY ACAK AGAR TIDAK BERSAMAAN */
-className={`group relative rounded-[24px] block transition-transform duration-500 hover:shadow-xl golden-aura ${
-// ... existing code ...
-                  clickedCard === cls.id ? 'animate-zoom-out' : 'hover:-translate-y-2'
-                }`}
-                style={{ animationDelay: `-${index * 2.7}s` }} 
-              >
-                {/* EFEK GRADASI AIR DENGAN KETERLAMBATAN ACAK & LAPISAN PUTIH */}
-                <div 
-                  className="absolute inset-0 rounded-[24px] floating-rainbow-water"
-                  style={{ animationDelay: `-${index * 5.4}s` }}
-                ></div>
-                <div className="absolute inset-[2px] rounded-[22px] glass-overlay transition-colors duration-500"></div>
-                
-                {/* KONTEN KARTU */}
-                <div className="relative p-8 h-full flex flex-col items-start z-10">
-                  {/* Ikon/Label Kelas - MELOMPAT DENGAN DURASI & DELAY ACAK */}
-                  <div 
-                    className={`w-16 h-16 rounded-full bg-gradient-to-br ${cls.gradient} flex items-center justify-center mb-6 shadow-md border-2 border-white group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 animate-soft-bounce`}
-                    style={{ 
-                      animationDuration: `${3 + (index % 3) * 0.5}s`, // Tempo acak 3s - 4.5s
-                      animationDelay: `-${index * 1.2}s`            // Mulai berbeda
-                    }}
-                  >
-                    <span className="text-white font-black text-2xl tracking-tighter drop-shadow-md">
-                      {cls.label}
-                    </span>
-                  </div>
+>
 
-                  {/* Teks */}
-                  <h3 className="text-2xl font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">
-                    {cls.className}
-                  </h3>
-                  
-                  <p className="text-sm text-slate-600 mb-8 font-medium leading-relaxed">
-                    {cls.desc}
-                  </p>
+{/* 2. LAPISAN PELANGI PASTEL DENGAN DELAY ACAK */}
+<div 
+className="relative h-full w-full rounded-[22.5px] floating-rainbow-water p-8 flex flex-col justify-between z-10 border border-white/60"
+style={{ animationDelay: `-${index * 5.3}s` }} 
+>
 
-                  {/* Tombol Akses (Visual saja) */}
-                  <div className="mt-auto w-full pt-4 border-t border-slate-200/50 flex justify-between items-center">
-                    <span className="text-indigo-600 font-semibold text-sm group-hover:text-indigo-700">
-                      Buka Spreadsheet
-                    </span>
-                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:bg-indigo-50 group-hover:scale-110 transition-all">
-                      <ExternalLink className="w-4 h-4 text-indigo-600" />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-20 bg-white/50 backdrop-blur-sm rounded-3xl border border-white">
-              <Search className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-slate-600 mb-2">Kelas Tidak Ditemukan</h3>
-              <p className="text-slate-500">Coba gunakan kata kunci pencarian yang lain.</p>
-            </div>
-          )}
-        </div>
+{/* Bagian Atas Kartu: Angka Kelas yang Melompat Acak */}
+<div>
+<div className="flex justify-between items-start mb-6">
 
-      </div>
-    </div>
-  );
+{/* Kontainer Animasi Melompat - Tempo dibuat bervariasi dengan modulo indeks */}
+<div 
+style={{ 
+animation: `soft-bounce ${3 + (index % 3) * 0.5}s ease-in-out infinite`,
+animationDelay: `-${index * 1.2}s` 
+}}
+>
+<div className={`w-16 h-16 rounded-full bg-gradient-to-br ${cls.color} flex items-center justify-center shadow-lg border-2 border-white/80 z-10 transform group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-500`}>
+<span className="text-white font-black text-2xl tracking-tighter drop-shadow-md">
+{cls.label}
+</span>
+</div>
+</div>
+
+</div>
+<h3 className="text-2xl font-extrabold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
+{cls.name}
+</h3>
+<p className="text-slate-600 font-medium text-sm">
+                      LHM, Rekap Nilai & Absensi
+                      LHM, Tahfidz, Tahsin & Grafik Akademik
+</p>
+</div>
+
+{/* Bagian Bawah: Indikator Buka */}
+<div className="mt-8 flex items-center text-sm font-bold text-sky-600 group-hover:text-sky-500 transition-colors duration-300">
+Buka Spreadsheet
+<svg className="ml-2 h-4 w-4 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+</svg>
+</div>
+
+</div>
+</a>
+))
+) : (
+<div className="col-span-full text-center py-20 relative z-10">
+<p className="text-slate-500 text-lg tracking-wide font-medium">Kelas tidak ditemukan.</p>
+</div>
+)}
+</div>
+
+{/* Footer */}
+<div className="mt-24 text-center text-sm font-semibold tracking-widest text-slate-400 relative z-10">
+<p>&copy; {new Date().getFullYear()} SD YAUMI FATIMAH KUDUS</p>
+</div>
+
+</div>
+</div>
+);
 }
