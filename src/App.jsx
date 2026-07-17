@@ -62,9 +62,8 @@ const classData = [
 
 export default function PortalKelas() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [clickedCard, setClickedCard] = useState(null); // Menyimpan ID kartu yang sedang diklik
+  const [clickedCard, setClickedCard] = useState(null);
 
-  // Filter kelas berdasarkan teks pencarian
   const filteredClasses = classData.filter(cls => 
     cls.className.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -72,53 +71,47 @@ export default function PortalKelas() {
   return (
     <div className="min-h-screen bg-[#f4f7fb] relative overflow-hidden font-sans selection:bg-sky-200">
       
+      {}
       <style dangerouslySetInnerHTML={{__html: `
-        /* ANIMASI ROTASI GARIS DI SEARCH BAR */
-        @keyframes spin-slow {
-          100% { transform: rotate(360deg); }
-        }
-        .spin-slow {
-          animation: spin-slow 4s linear infinite;
-        }
-
         /* ANIMASI BENTUK GEOMETRIS DI LATAR BELAKANG */
         @keyframes float-shape {
           0%, 100% { transform: translateY(0) rotate(0deg); }
           50% { transform: translateY(-40px) rotate(45deg); }
         }
 
-        /* ANIMASI GRADASI PELANGI (AIR MENGAMBANG) */
+        /* ANIMASI GRADASI PELANGI (AIR MENGAMBANG) - DILAMBATKAN & DISTRIBUSI WARNA MERATA */
         @keyframes water-flow {
           0% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
         }
         .floating-rainbow-water {
-          /* Latar pelangi yang utuh dalam 1 kartu dengan warna pastel */
           background: linear-gradient(
             120deg, 
-            rgba(255, 182, 193, 0.5) 0%,   /* Soft Pink */
-            rgba(255, 218, 185, 0.5) 20%,  /* Peach */
-            rgba(255, 255, 224, 0.5) 40%,  /* Light Yellow */
-            rgba(152, 251, 152, 0.5) 60%,  /* Pale Green */
-            rgba(173, 216, 230, 0.5) 80%,  /* Light Blue */
-            rgba(221, 160, 221, 0.5) 100%  /* Plum */
+            rgba(255, 182, 193, 0.4) 0%,   /* Soft Pink */
+            rgba(255, 218, 185, 0.4) 16%,  /* Peach */
+            rgba(255, 255, 224, 0.4) 33%,  /* Light Yellow */
+            rgba(152, 251, 152, 0.4) 50%,  /* Pale Green */
+            rgba(173, 216, 230, 0.4) 66%,  /* Light Blue */
+            rgba(221, 160, 221, 0.4) 83%,  /* Plum */
+            rgba(255, 182, 193, 0.4) 100%  /* Kembali ke Pink */
           );
           background-size: 150% 150%;
           animation: water-flow 20s ease-in-out infinite;
+          background-color: rgba(255, 255, 255, 0.2); 
         }
         
         /* LAPISAN PUTIH TRANSPARAN UNTUK KONTRAST TEKS */
         .glass-overlay {
-          background-color: rgba(255, 255, 255, 0.7); /* Putih transparan pekat */
+          background-color: rgba(255, 255, 255, 0.7); /* Putih transparan pekat agar teks jelas */
           box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
           backdrop-filter: blur(4px);
         }
 
-        /* ANIMASI CAHAYA EMAS (AURA BORDER) */
+        /* ANIMASI CAHAYA EMAS (AURA BORDER) - DIPERLAMBAT 50% */
         @keyframes golden-glow {
-          0%, 100% { box-shadow: 0 0 10px rgba(250, 204, 21, 0.2), 0 0 20px rgba(250, 204, 21, 0.1); }
-          50% { box-shadow: 0 0 25px rgba(250, 204, 21, 0.6), 0 0 40px rgba(250, 204, 21, 0.3); }
+          0%, 100% { box-shadow: 0 0 10px rgba(250, 204, 21, 0.1), 0 0 20px rgba(250, 204, 21, 0.05); }
+          50% { box-shadow: 0 0 30px rgba(250, 204, 21, 0.5), 0 0 50px rgba(250, 204, 21, 0.2); }
         }
         .golden-aura {
           animation: golden-glow 6s ease-in-out infinite;
@@ -135,18 +128,20 @@ export default function PortalKelas() {
           animation-iteration-count: infinite;
         }
 
-        /* ANIMASI KARTU DIKLIK (ZOOM IN/MEMBESAR) */
+        /* ANIMASI KARTU DIKLIK (ZOOM IN EXTREME & DURASI DIPANJANGKAN) */
         .animate-zoom-out {
-          animation: zoom-into-screen 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-          z-index: 50; /* Membawa kartu ke depan */
+          /* Animasi berdurasi 1.5s agar tidak hilang saat jeda 1.2s berakhir */
+          animation: zoom-into-screen 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+          z-index: 50; 
         }
         @keyframes zoom-into-screen {
-          0% { transform: scale(1); opacity: 1; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-          20% { transform: scale(0.95); opacity: 1; } /* Efek tertekan ke dalam sedikit */
-          100% { transform: scale(1.4); opacity: 0; box-shadow: 0 25px 50px -12px rgba(250, 204, 21, 0.8); } /* Membesar dan memudar ke layar */
+          0% { transform: scale(1); opacity: 1; }
+          15% { transform: scale(0.95); opacity: 1; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); } /* Ditekan ke dalam */
+          100% { transform: scale(3); opacity: 0; box-shadow: 0 0 100px rgba(255, 255, 255, 1); } /* Membesar drastis bak masuk portal */
         }
       `}} />
 
+      {}
       {/* BACKGROUND DEKORASI GEOMETRIS */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Lingkaran 1 */}
@@ -161,6 +156,7 @@ export default function PortalKelas() {
         <div className="absolute bottom-[10%] right-[5%] w-28 h-28 bg-purple-100 opacity-50 rotate-45" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', animation: 'float-shape 16s ease-in-out infinite 0.5s'}} />
       </div>
 
+      {}
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         
         {/* HEADER */}
@@ -181,24 +177,22 @@ export default function PortalKelas() {
           </p>
         </div>
 
-        {/* SEARCH BAR */}
-        <div className="max-w-2xl mx-auto mb-16 relative group">
-          <div className="absolute -inset-0 bg-gradient-to-r from-sky-400 via-indigo-500 to-sky-400 rounded-2xl opacity-60 group-focus-within:opacity-100 blur transition duration-500 group-hover:duration-200 spin-slow"></div>
-          {/* Ketebalan garis outline diatur melalui padding kontainer ini (p-[2.5px]) */}
-          <div className="relative bg-white rounded-2xl p-[2.5px] shadow-md group-hover:shadow-lg transition-shadow">
-            <div className="relative flex items-center bg-white rounded-[14px] overflow-hidden px-4 py-3">
-              <Search className="w-6 h-6 text-slate-400 group-focus-within:text-sky-600 transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Cari kelas..." 
-                className="w-full pl-4 pr-4 py-2 text-slate-800 font-semibold placeholder-slate-400 bg-transparent border-none outline-none focus:ring-0 text-lg"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+        {}
+        {/* SEARCH BAR BERSINAR & ELEGAN (TANPA KOTAK BERPUTAR) */}
+        <div className="max-w-2xl mx-auto mb-16 relative group z-20">
+          <div className="relative flex items-center bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden px-5 py-4 shadow-md border-2 border-transparent transition-all duration-300 focus-within:shadow-xl focus-within:border-sky-300 focus-within:ring-4 focus-within:ring-sky-100 focus-within:-translate-y-1">
+            <Search className="w-6 h-6 text-slate-400 group-focus-within:text-sky-600 transition-colors" />
+            <input 
+              type="text" 
+              placeholder="Cari kelas..." 
+              className="w-full pl-4 pr-4 text-slate-800 font-semibold placeholder-slate-400 bg-transparent border-none outline-none focus:ring-0 text-lg"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
         </div>
 
+        {}
         {/* GRID CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
           {filteredClasses.length > 0 ? (
@@ -209,22 +203,22 @@ export default function PortalKelas() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => {
-                  e.preventDefault(); // Mencegah pindah halaman seketika
-                  setClickedCard(cls.id); // Memicu animasi
+                  e.preventDefault(); 
+                  setClickedCard(cls.id); // Mulai animasi membesar (1.5 detik)
                   
-                  // Menahan selama 1 detik (1000ms) agar animasi zoom selesai
+                  // Tahan 1.2 detik sebelum membuka link, jadi animasi tetap terlihat
                   setTimeout(() => {
                     window.open(cls.link, '_blank');
-                    setClickedCard(null); // Reset state agar kartu kembali normal saat user kembali ke tab ini
-                  }, 1000);
+                    setClickedCard(null); // Kembalikan ke normal
+                  }, 1200); 
                 }}
-                /* EFEK AURA EMAS DENGAN DELAY ACAK AGAR TIDAK BERSAMAAN */
+                /* EFEK AURA EMAS DENGAN DELAY ACAK */
                 className={`group relative rounded-[24px] block transition-transform duration-500 hover:shadow-xl golden-aura ${
                   clickedCard === cls.id ? 'animate-zoom-out' : 'hover:-translate-y-2'
                 }`}
                 style={{ animationDelay: `-${index * 2.7}s` }} 
               >
-                {/* EFEK GRADASI AIR DENGAN KETERLAMBATAN ACAK & LAPISAN PUTIH */}
+                {/* EFEK GRADASI AIR */}
                 <div 
                   className="absolute inset-0 rounded-[24px] floating-rainbow-water"
                   style={{ animationDelay: `-${index * 5.4}s` }}
@@ -233,12 +227,12 @@ export default function PortalKelas() {
                 
                 {/* KONTEN KARTU */}
                 <div className="relative p-8 h-full flex flex-col items-start z-10">
-                  {/* Ikon/Label Kelas - MELOMPAT DENGAN DURASI & DELAY ACAK */}
+                  {/* Ikon Angka - MELOMPAT DENGAN DURASI & DELAY ACAK */}
                   <div 
-                    className={`w-16 h-16 rounded-full bg-gradient-to-br ${cls.gradient} flex items-center justify-center mb-6 shadow-md border-2 border-white group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 animate-soft-bounce`}
+                    className={`w-16 h-16 rounded-full bg-gradient-to-br ${cls.gradient} flex items-center justify-center mb-6 shadow-md border-[3px] border-white group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 animate-soft-bounce`}
                     style={{ 
-                      animationDuration: `${3 + (index % 3) * 0.5}s`, // Tempo acak 3s - 4.5s
-                      animationDelay: `-${index * 1.2}s`            // Mulai berbeda
+                      animationDuration: `${3 + (index % 3) * 0.5}s`, 
+                      animationDelay: `-${index * 1.2}s`
                     }}
                   >
                     <span className="text-white font-black text-2xl tracking-tighter drop-shadow-md">
@@ -255,7 +249,7 @@ export default function PortalKelas() {
                     {cls.desc}
                   </p>
 
-                  {/* Tombol Akses (Visual saja) */}
+                  {/* Tombol Akses */}
                   <div className="mt-auto w-full pt-4 border-t border-slate-200/50 flex justify-between items-center">
                     <span className="text-indigo-600 font-semibold text-sm group-hover:text-indigo-700">
                       Buka Spreadsheet
