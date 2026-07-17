@@ -329,7 +329,11 @@ export default function PortalKelas() {
                   clickedCard === cls.id ? 'animate-zoom-out' : 'hover:-translate-y-2'
                 }`}
                 style={{
-                  animationDelay: `-${index * 2.7}s`,
+                  // PENTING: delay negatif (untuk stagger golden-aura) HANYA dipakai
+                  // saat kartu belum diklik. Kalau tetap dipakai saat animate-zoom-out
+                  // aktif, animasi zoom ikut "melompat" ke tengah durasinya dan
+                  // langsung menghilang instan (bug yang bikin kartu selain Kelas 1 tidak smooth).
+                  animationDelay: clickedCard === cls.id ? '0s' : `-${index * 2.7}s`,
                 }}
               >
 
