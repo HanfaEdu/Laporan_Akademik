@@ -9,9 +9,9 @@ export default function PortalNavigasiKelas() {
     const ctx = canvas.getContext('2d');
     let animationFrameId;
     
-    // Palet warna ceria/breeze untuk partikel di tema terang
-    const colors = ['#38bdf8', '#fb7185', '#34d399', '#fbbf24'];
-    let particles = [];
+    // Palet warna untuk bentuk geometris (lebih lembut untuk background)
+    const colors = ['rgba(56, 189, 248, 0.4)', 'rgba(251, 113, 133, 0.4)', 'rgba(52, 211, 153, 0.4)', 'rgba(251, 191, 36, 0.4)'];
+    let shapes = [];
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -20,60 +20,61 @@ export default function PortalNavigasiKelas() {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    class Particle {
+    class Shape {
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        // Gerakan kalem dan lambat (0.6)
-        this.vx = (Math.random() - 0.5) * 0.6;
-        this.vy = (Math.random() - 0.5) * 0.6;
-        this.radius = Math.random() * 2.5 + 1;
+        // Gerakan lambat dan mengambang
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.size = Math.random() * 20 + 10; // Ukuran bervariasi
         this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.type = Math.random() > 0.5 ? 'triangle' : 'square'; // Jenis bentuk
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.02;
       }
 
       update() {
         this.x += this.vx;
         this.y += this.vy;
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        this.rotation += this.rotationSpeed;
+
+        // Memantul di tepi
+        if (this.x < -this.size || this.x > canvas.width + this.size) this.vx *= -1;
+        if (this.y < -this.size || this.y > canvas.height + this.size) this.vy *= -1;
       }
 
       draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        if (this.type === 'triangle') {
+          ctx.moveTo(0, -this.size);
+          ctx.lineTo(this.size * 0.866, this.size * 0.5); // 0.866 ~ sin(60deg)
+          ctx.lineTo(-this.size * 0.866, this.size * 0.5);
+        } else { // square
+          ctx.rect(-this.size / 2, -this.size / 2, this.size, this.size);
+        }
+        ctx.closePath();
+        
         ctx.fillStyle = this.color;
         ctx.fill();
+        ctx.restore();
       }
     }
 
-    // Inisialisasi partikel
-    for (let i = 0; i < 60; i++) {
-      particles.push(new Particle());
+    // Inisialisasi bentuk
+    for (let i = 0; i < 30; i++) { // Kurangi jumlah agar tidak terlalu ramai
+      shapes.push(new Shape());
     }
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].update();
-        particles[i].draw();
-
-        // Menggambar garis penghubung antar partikel yang berdekatan
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 130) {
-            ctx.beginPath();
-            ctx.strokeStyle = particles[i].color;
-            ctx.globalAlpha = 1 - (distance / 130); 
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-            ctx.globalAlpha = 1.0; 
-          }
-        }
+      for (let i = 0; i < shapes.length; i++) {
+        shapes[i].update();
+        shapes[i].draw();
       }
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -180,18 +181,21 @@ export default function PortalNavigasiKelas() {
           z-index: 0;
         }
 
-        /* 3. Latar Kartu Transparan ala Glassmorphism Ceria */
+        /* 3. Latar Kartu Transparan ala Glassmorphism Ceria (Lebih Kontras) */
         .glass-rainbow-soft {
+          /* Gradient yang sedikit lebih kuat */
           background: linear-gradient(135deg, 
-            rgba(239, 68, 68, 0.02) 0%, 
-            rgba(234, 179, 8, 0.02) 25%, 
-            rgba(34, 197, 94, 0.02) 50%, 
-            rgba(59, 130, 246, 0.02) 75%, 
-            rgba(168, 85, 247, 0.02) 100%
+            rgba(239, 68, 68, 0.04) 0%, 
+            rgba(234, 179, 8, 0.04) 25%, 
+            rgba(34, 197, 94, 0.04) 50%, 
+            rgba(59, 130, 246, 0.04) 75%, 
+            rgba(168, 85, 247, 0.04) 100%
           );
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          background-color: rgba(255, 255, 255, 0.85); /* Putih translusen untuk tema cerah */
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          /* Latar belakang putih dengan opasitas lebih tinggi dan sedikit bayangan dalam */
+          background-color: rgba(255, 255, 255, 0.95);
+          box-shadow: inset 0 2px 4px rgba(255,255,255,0.7), 0 4px 15px rgba(0,0,0,0.03);
         }
       `}</style>
 
