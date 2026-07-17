@@ -189,22 +189,22 @@ export default function PortalNavigasiKelas() {
           100% { background-position: 0% 50%; }
         }
         .floating-rainbow-water {
-          /* Gradasi pelangi agar terlihat semua di dalam 1 kartu dengan batas (stop points) yang rapat */
+          /* Gradasi warna diubah menjadi sangat pastel/lembut */
           background: linear-gradient(
             135deg, 
-            rgba(239, 68, 68, 0.3) 0%,   /* Merah */
-            rgba(249, 115, 22, 0.3) 20%, /* Oranye */
-            rgba(234, 179, 8, 0.3) 40%,  /* Kuning */
-            rgba(34, 197, 94, 0.3) 60%,  /* Hijau */
-            rgba(59, 130, 246, 0.3) 80%, /* Biru */
-            rgba(168, 85, 247, 0.3) 100% /* Ungu */
+            rgba(254, 205, 211, 0.5) 0%,   /* Pastel Rose */
+            rgba(253, 230, 138, 0.5) 20%,  /* Pastel Amber */
+            rgba(254, 240, 138, 0.5) 40%,  /* Pastel Yellow */
+            rgba(167, 243, 208, 0.5) 60%,  /* Pastel Emerald */
+            rgba(186, 230, 253, 0.5) 80%,  /* Pastel Sky */
+            rgba(233, 213, 255, 0.5) 100%  /* Pastel Purple */
           );
-          background-size: 150% 150%; /* Diperkecil (dari 400%) agar warna-warni tampak bersamaan */
-          animation: water-flow 20s ease infinite; /* Kecepatan diperlambat 40% (durasi 12s -> 20s) */
+          background-size: 150% 150%; 
+          animation: water-flow 35s ease infinite; /* Diperlambat drastis (dari 20s ke 35s) */
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
-          background-color: rgba(255, 255, 255, 0.3); /* Warna dasar solid agar teks tetap terbaca */
-          box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.5), inset 0 -2px 10px rgba(0, 0, 0, 0.05);
+          background-color: rgba(255, 255, 255, 0.75); /* Putih dipertebal agar teks sangat jelas terbaca */
+          box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.7), inset 0 -2px 10px rgba(0, 0, 0, 0.03);
         }
 
         /* 4. Cahaya Emas Berpendar Keluar */
@@ -223,8 +223,8 @@ export default function PortalNavigasiKelas() {
           }
         }
         .golden-aura {
-          /* Animasi diperlambat 50% (dari 3s menjadi 6s) */
-          animation: golden-glow 6s ease-in-out infinite;
+          /* Animasi diperlambat lagi menjadi 12 detik */
+          animation: golden-glow 12s ease-in-out infinite;
           border: 1px solid rgba(250, 204, 21, 0.5);
         }
       `}</style>
@@ -299,20 +299,26 @@ export default function PortalNavigasiKelas() {
         {/* Grid Cards Section */}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {filteredClasses.length > 0 ? (
-            filteredClasses.map((cls) => (
+            filteredClasses.map((cls, index) => (
               <a
                 key={cls.id}
                 href={cls.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative rounded-[24px] overflow-hidden p-[1.5px] transition-transform duration-500 hover:-translate-y-2 block golden-aura"
-                style={{ '--glow-color': cls.hex }}
+                style={{ 
+                  '--glow-color': cls.hex,
+                  animationDelay: `-${index * 2.7}s` /* Waktu mulai pendaran emas tiap kartu tidak bersamaan */
+                }}
               >
                 {/* 1. Latar Belakang yang Berputar */}
                 <div className="spin-container opacity-20 group-hover:opacity-70 transition-opacity duration-500"></div>
                 
                 {/* 2. Isi Kartu (Efek Pelangi Air Mengambang) */}
-                <div className="relative h-full w-full rounded-[22.5px] floating-rainbow-water p-8 flex flex-col justify-between z-10 border border-white/60">
+                <div 
+                  className="relative h-full w-full rounded-[22.5px] floating-rainbow-water p-8 flex flex-col justify-between z-10 border border-white/60"
+                  style={{ animationDelay: `-${index * 5.3}s` }} /* Waktu mulai gerakan pelangi tiap kartu tidak bersamaan */
+                >
                   
                   {/* Bagian Atas Kartu: Ikon & Judul */}
                   <div>
