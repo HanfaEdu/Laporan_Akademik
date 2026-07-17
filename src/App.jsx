@@ -176,26 +176,54 @@ export default function PortalNavigasiKelas() {
           left: -50%;
           width: 200%;
           height: 200%;
+          /* GRADASI DIPERTEGAS: Dari transparan perlahan ke warna solid di ujungnya */
           background: conic-gradient(from 0deg, transparent 40%, var(--glow-color) 100%);
           animation: spin-border 6s linear infinite;
           z-index: 0;
         }
 
-        /* 3. Latar Kartu Transparan ala Glassmorphism Ceria (Lebih Kontras) */
-        .glass-rainbow-soft {
-          /* Gradient yang sedikit lebih kuat */
-          background: linear-gradient(135deg, 
-            rgba(239, 68, 68, 0.04) 0%, 
-            rgba(234, 179, 8, 0.04) 25%, 
-            rgba(34, 197, 94, 0.04) 50%, 
-            rgba(59, 130, 246, 0.04) 75%, 
-            rgba(168, 85, 247, 0.04) 100%
+        /* 3. Latar Kartu: Gradasi Pelangi Air Mengambang */
+        @keyframes water-flow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .floating-rainbow-water {
+          background: linear-gradient(
+            -45deg, 
+            rgba(239, 68, 68, 0.2),  /* Soft Merah */
+            rgba(234, 179, 8, 0.2),  /* Soft Kuning */
+            rgba(34, 197, 94, 0.2),  /* Soft Hijau */
+            rgba(59, 130, 246, 0.2), /* Soft Biru */
+            rgba(168, 85, 247, 0.2)  /* Soft Ungu */
           );
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          /* Latar belakang putih dengan opasitas lebih tinggi dan sedikit bayangan dalam */
-          background-color: rgba(255, 255, 255, 0.95);
-          box-shadow: inset 0 2px 4px rgba(255,255,255,0.7), 0 4px 15px rgba(0,0,0,0.03);
+          background-size: 300% 300%;
+          animation: water-flow 8s ease infinite;
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          /* Base transparan agar gradasi terlihat jelas namun teks tetap terbaca */
+          background-color: rgba(255, 255, 255, 0.35);
+          box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.7), inset 0 -2px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        /* 4. Cahaya Emas Berpendar Keluar */
+        @keyframes golden-glow {
+          0% { 
+            box-shadow: 0 0 15px 2px rgba(250, 204, 21, 0.3), 0 0 30px 5px rgba(250, 204, 21, 0.1); 
+            border-color: rgba(250, 204, 21, 0.4); 
+          }
+          50% { 
+            box-shadow: 0 0 25px 5px rgba(250, 204, 21, 0.7), 0 0 50px 15px rgba(250, 204, 21, 0.3); 
+            border-color: rgba(250, 204, 21, 0.9); 
+          }
+          100% { 
+            box-shadow: 0 0 15px 2px rgba(250, 204, 21, 0.3), 0 0 30px 5px rgba(250, 204, 21, 0.1); 
+            border-color: rgba(250, 204, 21, 0.4); 
+          }
+        }
+        .golden-aura {
+          animation: golden-glow 3s ease-in-out infinite;
+          border: 1px solid rgba(250, 204, 21, 0.5);
         }
       `}</style>
 
@@ -237,21 +265,27 @@ export default function PortalNavigasiKelas() {
           </p>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar - DIPERTEGAS */}
         <div className="max-w-xl mx-auto mb-14">
-          <div className="relative group overflow-hidden rounded-2xl p-[1.5px] shadow-sm">
-            {/* Efek Border Berputar untuk Search Bar */}
-            <div className="spin-container opacity-25 group-focus-within:opacity-60 transition-opacity duration-700" style={{ '--glow-color': '#0ea5e9' }}></div>
+          {/* Border p-[2.5px] lebih tebal dari sebelumnya p-[1.5px] */}
+          <div className="relative group overflow-hidden rounded-2xl p-[2.5px] shadow-md hover:shadow-lg transition-shadow duration-300">
             
-            <div className="relative z-10 flex items-center bg-white/95 backdrop-blur-md rounded-[14px] w-full">
+            {/* Efek Border Berputar untuk Search Bar - Opacity ditingkatkan drastis */}
+            {/* Default opacity-60, saat difokuskan opacity-100 */}
+            <div 
+              className="spin-container opacity-60 group-focus-within:opacity-100 transition-opacity duration-700" 
+              style={{ '--glow-color': '#0ea5e9' /* Warna Biru Sky Tailwind yang terang */ }}
+            ></div>
+            
+            <div className="relative z-10 flex items-center bg-white/95 backdrop-blur-md rounded-[13px] w-full">
               <div className="pl-5 flex items-center pointer-events-none">
-                <svg className="h-6 w-6 text-slate-400 group-focus-within:text-sky-500 transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-6 w-6 text-slate-400 group-focus-within:text-sky-600 transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
               <input
                 type="text"
-                className="block w-full pl-3 pr-5 py-4 bg-transparent border-none text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-0 font-medium text-lg"
+                className="block w-full pl-3 pr-5 py-4 bg-transparent border-none text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-0 font-semibold text-lg"
                 placeholder="Cari kelas..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -269,14 +303,14 @@ export default function PortalNavigasiKelas() {
                 href={cls.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative rounded-[24px] overflow-hidden p-[1.5px] transition-transform duration-500 hover:-translate-y-1 shadow-sm hover:shadow-xl block"
+                className="group relative rounded-[24px] overflow-hidden p-[1.5px] transition-transform duration-500 hover:-translate-y-2 block golden-aura"
                 style={{ '--glow-color': cls.hex }}
               >
                 {/* 1. Latar Belakang yang Berputar */}
-                <div className="spin-container opacity-20 group-hover:opacity-60 transition-opacity duration-500"></div>
+                <div className="spin-container opacity-20 group-hover:opacity-70 transition-opacity duration-500"></div>
                 
-                {/* 2. Isi Kartu (Soft Rainbow Glass) */}
-                <div className="relative h-full w-full rounded-[22.5px] glass-rainbow-soft p-8 flex flex-col justify-between z-10 border border-white/60">
+                {/* 2. Isi Kartu (Efek Pelangi Air Mengambang) */}
+                <div className="relative h-full w-full rounded-[22.5px] floating-rainbow-water p-8 flex flex-col justify-between z-10 border border-white/60">
                   
                   {/* Bagian Atas Kartu: Ikon & Judul */}
                   <div>
