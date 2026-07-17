@@ -189,22 +189,21 @@ export default function PortalNavigasiKelas() {
           100% { background-position: 0% 50%; }
         }
         .floating-rainbow-water {
-          /* Gradasi pelangi dipertegas dengan opasitas warna yang lebih tinggi */
+          /* Gradasi pelangi agar terlihat semua di dalam 1 kartu dengan batas (stop points) yang rapat */
           background: linear-gradient(
-            -45deg, 
-            rgba(239, 68, 68, 0.4),  /* Merah */
-            rgba(249, 115, 22, 0.4), /* Oranye */
-            rgba(234, 179, 8, 0.4),  /* Kuning */
-            rgba(34, 197, 94, 0.4),  /* Hijau */
-            rgba(59, 130, 246, 0.4), /* Biru */
-            rgba(168, 85, 247, 0.4)  /* Ungu */
+            135deg, 
+            rgba(239, 68, 68, 0.3) 0%,   /* Merah */
+            rgba(249, 115, 22, 0.3) 20%, /* Oranye */
+            rgba(234, 179, 8, 0.3) 40%,  /* Kuning */
+            rgba(34, 197, 94, 0.3) 60%,  /* Hijau */
+            rgba(59, 130, 246, 0.3) 80%, /* Biru */
+            rgba(168, 85, 247, 0.3) 100% /* Ungu */
           );
-          background-size: 400% 400%; /* Diperbesar agar transisi warna lebih mulus */
-          animation: water-flow 12s ease infinite; /* Diperlambat sedikit agar lebih elegan */
+          background-size: 150% 150%; /* Diperkecil (dari 400%) agar warna-warni tampak bersamaan */
+          animation: water-flow 20s ease infinite; /* Kecepatan diperlambat 40% (durasi 12s -> 20s) */
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
-          /* Base transparan dikurangi agar warna gradasi lebih dominan */
-          background-color: rgba(255, 255, 255, 0.2);
+          background-color: rgba(255, 255, 255, 0.3); /* Warna dasar solid agar teks tetap terbaca */
           box-shadow: inset 0 2px 20px rgba(255, 255, 255, 0.5), inset 0 -2px 10px rgba(0, 0, 0, 0.05);
         }
 
