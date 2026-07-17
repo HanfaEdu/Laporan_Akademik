@@ -1,20 +1,109 @@
-// ... existing code ...
-        }
-        .golden-aura {
-          /* Animasi diperlambat lagi menjadi 12 detik */
-          animation: golden-glow 12s ease-in-out infinite;
-          border: 1px solid rgba(250, 204, 21, 0.5);
-        }
+import React, { useState, useEffect, useRef } from 'react';
 
-        /* 5. Animasi Melompat Lembut (Soft Bounce) untuk Angka Kelas */
-        @keyframes soft-bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-12px); }
-        }
-      `}</style>
+export default function PortalKelas() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const canvasRef = useRef(null);
 
-      {/* CANVAS BACKGROUND */}
-// ... existing code ...
+  // MESIN PARTIKEL CANVAS (Latar Belakang Geometris Cerah & Kalem)
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    
+    // Warna-warna pastel yang cerah dan segar untuk pagi/siang hari
+    const colors = ['#38bdf8', '#818cf8', '#34d399', '#fbbf24', '#f472b6'];
+    let particles = [];
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        // Kecepatan sangat lambat agar kalem
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.size = Math.random() * 10 + 5;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.shape = Math.floor(Math.random() * 3); // 0: Lingkaran, 1: Segitiga, 2: Kotak
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.rotation += this.rotationSpeed;
+
+        if (this.x < -50) this.x = canvas.width + 50;
+        if (this.x > canvas.width + 50) this.x = -50;
+        if (this.y < -50) this.y = canvas.height + 50;
+        if (this.y > canvas.height + 50) this.y = -50;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        // Transparansi bentuk ditingkatkan sedikit agar lebih terlihat dibanding background
+        ctx.globalAlpha = 0.25; 
+        ctx.fillStyle = this.color;
+        
+        ctx.beginPath();
+        if (this.shape === 0) {
+          // Lingkaran
+          ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+        } else if (this.shape === 1) {
+          // Segitiga
+          ctx.moveTo(0, -this.size);
+          ctx.lineTo(this.size, this.size);
+          ctx.lineTo(-this.size, this.size);
+        } else {
+          // Kotak
+          ctx.rect(-this.size, -this.size, this.size * 2, this.size * 2);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // Garis penghubung tipis antar elemen yang berdekatan
+        for (let j = 0; j < particles.length; j++) {
+          const p2 = particles[j];
+          if (this === p2) continue;
+          
+          const dx = this.x - p2.x;
+          const dy = this.y - p2.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 150) {
+            ctx.beginPath();
+            ctx.strokeStyle = this.color;
+            ctx.globalAlpha = 0.05 * (1 - (distance / 150));
+            ctx.lineWidth = 1;
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+            ctx.globalAlpha = 1.0;
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i < 40; i++) {
+      particles.push(new Particle());
+    }
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
       animationFrameId = requestAnimationFrame(animate);
     };
 
@@ -25,6 +114,7 @@
     };
   }, []);
 
+  // DATA KELAS DENGAN LABEL ANGKA UNIK
   const classData = [
     { 
       id: '1', 
@@ -85,16 +175,163 @@
   ];
 
   const filteredClasses = classData.filter((cls) =>
-// ... existing code ...
+    cls.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="relative min-h-screen font-sans text-slate-800 bg-slate-50 overflow-hidden">
+      
+      {/* --- CUSTOM CSS LENGKAP --- */}
+      <style>{`
+        /* 1. Animasi Ripple Logo */
+        @keyframes ripple-pulse {
+          0% { transform: scale(0.8); opacity: 0.2; }
+          100% { transform: scale(2.5); opacity: 0; }
+        }
+        .ripple-ring {
+          position: absolute;
+          border-radius: 50%;
+          animation: ripple-pulse 4s cubic-bezier(0.1, 0.7, 1, 0.1) infinite;
+        }
+
+        /* 2. Animasi Garis Kotak Pencarian (Lebih Terang & Solid) */
+        @keyframes spin-border {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .spin-container {
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: conic-gradient(from 0deg, transparent 40%, var(--glow-color) 100%);
+          animation: spin-border 5s linear infinite;
+          z-index: 0;
+        }
+
+        /* 3. Latar Kartu Transparan Pelangi (Soft Pastel Rainbow) */
+        @keyframes water-flow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .floating-rainbow-water {
+          /* Latar putih dasar sedikit kuat agar teks tetap terbaca jelas */
+          background-color: rgba(255, 255, 255, 0.7); 
+          /* Gradasi pelangi pastel dengan transparansi tinggi (opacity 0.15 - 0.2) */
+          background-image: linear-gradient(135deg, 
+            rgba(252, 165, 165, 0.2) 0%,   /* Soft Red */
+            rgba(253, 224, 71, 0.15) 20%,  /* Soft Yellow */
+            rgba(134, 239, 172, 0.2) 40%,  /* Soft Green */
+            rgba(147, 197, 253, 0.2) 60%,  /* Soft Blue */
+            rgba(196, 181, 253, 0.2) 80%,  /* Soft Purple */
+            rgba(252, 165, 165, 0.2) 100%  /* Soft Red loop */
+          );
+          background-size: 150% 150%;
+          /* Sangat diperlambat (35 detik) agar pergerakan air sangat rileks */
+          animation: water-flow 35s ease-in-out infinite; 
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          box-shadow: inset 0 2px 10px rgba(255,255,255,0.8);
+        }
+
+        /* 4. Cahaya Emas Luar Kartu (Golden Aura) */
+        @keyframes golden-glow {
+          0%, 100% { box-shadow: 0 0 10px 0 rgba(250, 204, 21, 0); }
+          50% { box-shadow: 0 0 30px 10px rgba(250, 204, 21, 0.35); }
+        }
+        .golden-aura {
+          /* Animasi diperlambat secara drastis (12 detik per denyut) */
+          animation: golden-glow 12s ease-in-out infinite;
+          border: 1px solid rgba(250, 204, 21, 0.4);
+        }
+
+        /* 5. Animasi Angka Melompat (Soft Bounce) */
+        @keyframes soft-bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-12px); }
+        }
+      `}</style>
+
+      {/* CANVAS BACKGROUND */}
+      <canvas 
+        ref={canvasRef} 
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{ width: '100vw', height: '100vh' }}
+      />
+
+      {/* --- CONTENT LAYER --- */}
+      <div className="relative z-10 max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        
+        {/* Header Section */}
+        <div className="text-center mb-16 flex flex-col items-center mt-8">
+          <div className="relative flex justify-center items-center mb-8 w-28 h-28">
+            <div className="ripple-ring w-full h-full border border-sky-300" style={{ animationDelay: '0s' }}></div>
+            <div className="ripple-ring w-full h-full border border-pink-300" style={{ animationDelay: '1.3s' }}></div>
+            <div className="ripple-ring w-full h-full border border-amber-300" style={{ animationDelay: '2.6s' }}></div>
+            
+            <div className="relative z-10 bg-white p-3 rounded-full shadow-lg border-2 border-white">
+              <img src="/logo.png" alt="Logo SD Yaumi Fatimah Kudus" className="w-24 h-24 object-contain rounded-full" />
+            </div>
+          </div>
+          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl text-slate-800 drop-shadow-sm mb-2">
+            Laporan Akademik
+          </h1>
+          <p className="mt-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-500 via-indigo-500 to-pink-500 tracking-widest uppercase">
+            SD Yaumi Fatimah Kudus
+          </p>
+        </div>
+
+        {/* Search Bar - Garis Luar Dipertebal & Lebih Terang */}
+        <div className="max-w-2xl mx-auto mb-16">
+          <div className="relative group overflow-hidden rounded-2xl p-[3px] shadow-md hover:shadow-lg transition-shadow duration-300">
+            {/* Opasitas lebih tebal (60%) agar garis biru jelas terlihat */}
+            <div className="spin-container opacity-60 group-focus-within:opacity-100 transition-opacity duration-500" style={{ '--glow-color': '#0ea5e9' }}></div>
+            
+            <div className="relative z-10 flex items-center bg-white rounded-[13px] w-full h-full">
+              <div className="pl-5 flex items-center pointer-events-none">
+                <svg className="h-6 w-6 text-slate-400 group-focus-within:text-sky-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                className="block w-full pl-4 pr-5 py-4 bg-transparent border-none text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-0 font-semibold text-lg"
+                placeholder="Cari kelas..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Grid Cards Section */}
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredClasses.length > 0 ? (
+            filteredClasses.map((cls, index) => (
+              <a
+                key={cls.id}
+                href={cls.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                /* 1. KELAS AURA EMAS DENGAN DELAY ACAK AGAR TIDAK SINKRON */
+                className="group relative rounded-[24px] block transition-transform duration-500 hover:-translate-y-2 hover:shadow-xl golden-aura"
+                style={{ 
+                  animationDelay: `-${index * 2.7}s`,
+                }}
+              >
+                
+                {/* 2. LAPISAN PELANGI PASTEL DENGAN DELAY ACAK */}
                 <div 
                   className="relative h-full w-full rounded-[22.5px] floating-rainbow-water p-8 flex flex-col justify-between z-10 border border-white/60"
-                  style={{ animationDelay: `-${index * 5.3}s` }} /* Waktu mulai gerakan pelangi tiap kartu tidak bersamaan */
+                  style={{ animationDelay: `-${index * 5.3}s` }} 
                 >
                   
-                  {}
-                  {/* Bagian Atas Kartu: Ikon/Angka & Judul */}
+                  {/* Bagian Atas Kartu: Angka Kelas yang Melompat Acak */}
                   <div>
                     <div className="flex justify-between items-start mb-6">
+                      
                       {/* Kontainer Animasi Melompat - Tempo dibuat bervariasi dengan modulo indeks */}
                       <div 
                         style={{ 
@@ -108,10 +345,40 @@
                           </span>
                         </div>
                       </div>
+
                     </div>
                     <h3 className="text-2xl font-extrabold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
                       {cls.name}
                     </h3>
-                    <p className="text-slate-500 font-medium text-sm">
+                    <p className="text-slate-600 font-medium text-sm">
                       LHM, Rekap Nilai & Absensi
-// ... existing code ...
+                    </p>
+                  </div>
+                  
+                  {/* Bagian Bawah: Indikator Buka */}
+                  <div className="mt-8 flex items-center text-sm font-bold text-sky-600 group-hover:text-sky-500 transition-colors duration-300">
+                    Buka Spreadsheet
+                    <svg className="ml-2 h-4 w-4 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </div>
+
+                </div>
+              </a>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-20 relative z-10">
+              <p className="text-slate-500 text-lg tracking-wide font-medium">Kelas tidak ditemukan.</p>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="mt-24 text-center text-sm font-semibold tracking-widest text-slate-400 relative z-10">
+          <p>&copy; {new Date().getFullYear()} SD YAUMI FATIMAH KUDUS</p>
+        </div>
+
+      </div>
+    </div>
+  );
+}
