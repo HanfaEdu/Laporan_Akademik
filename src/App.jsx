@@ -405,7 +405,7 @@ export default function PortalKelas() {
                       {cls.name}
                     </h3>
                     <p className="text-slate-600 font-medium text-sm leading-relaxed">
-                      LHM, Rekap Nilai, Absensi, Tahfidz, Tahsin & Grafik Akademik
+                      LHM, Rekap Nilai, Tahfidz, Tahsin & Grafik Akademik
                     </p>
                   </div>
 
