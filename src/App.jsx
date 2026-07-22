@@ -225,7 +225,7 @@ export default function PortalKelas() {
             var(--glow-color, #0284c7) 100%
           );
           /* Kecepatan diperlambat menjadi 15 detik agar tidak pusing */
-          animation: outline-spin 15s linear infinite;
+          animation: outline-spin 20s linear infinite;
           animation-delay: var(--spin-delay, 0s);
         }
 
