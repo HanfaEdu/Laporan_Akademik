@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 export default function PortalKelas() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [clickedCard, setClickedCard] = useState(null); // NEW: state untuk animasi klik
+  const [clickedCard, setClickedCard] = useState(null);
   const canvasRef = useRef(null);
 
   // MESIN PARTIKEL CANVAS (Latar Belakang Geometris Cerah & Kalem)
@@ -108,62 +108,62 @@ export default function PortalKelas() {
     };
   }, []);
 
-  // DATA KELAS DENGAN LABEL ANGKA UNIK
+  // DATA KELAS DENGAN KODE WARNA OUTLINE TEGAS
   const classData = [
     {
       id: '1',
       name: 'Kelas 1',
       link: 'https://docs.google.com/spreadsheets/d/1ni-fA-2z6sDIjOV0WojK3KjOnBk2D9mvwqCSLbMVhqU/edit?usp=sharing',
-      color: 'from-sky-400 to-blue-600',
-      hex: '#0284c7',
+      color: 'from-sky-500 to-blue-700',
+      hex: '#0284c7', // Sky Blue tegas
       label: '1'
     },
     {
       id: '2a',
       name: 'Kelas 2A',
       link: 'https://docs.google.com/spreadsheets/d/1ZRQk2OniU9a6py1JlNlgvKRnQlnu74XvD4oGf5mDc30/edit?usp=sharing',
-      color: 'from-pink-400 to-rose-600',
-      hex: '#e11d48',
+      color: 'from-pink-500 to-rose-700',
+      hex: '#be123c', // Rose pekat
       label: '2A'
     },
     {
       id: '2b',
       name: 'Kelas 2B',
       link: 'https://docs.google.com/spreadsheets/d/1mPPXLgRUi3udMbkSyEwJJha857IRQqXQNEVvhGG1Bxo/edit?usp=sharing',
-      color: 'from-purple-400 to-fuchsia-600',
-      hex: '#c026d3',
+      color: 'from-purple-500 to-fuchsia-700',
+      hex: '#a21caf', // Purple Magenta tegas
       label: '2B'
     },
     {
       id: '3',
       name: 'Kelas 3',
       link: 'https://docs.google.com/spreadsheets/d/1-xj70IwyCD5YAvnf2Icimu4D6qRsp-zdL2mnDFRvwRI/edit?usp=sharing',
-      color: 'from-emerald-400 to-green-600',
-      hex: '#16a34a',
+      color: 'from-emerald-500 to-green-700',
+      hex: '#15803d', // Hijau tua kontras
       label: '3'
     },
     {
       id: '4',
       name: 'Kelas 4',
       link: 'https://docs.google.com/spreadsheets/d/1cv2W0S-0XZPJMoS_XqNlnowChGp9wODd0SCdxIu9bek/edit?usp=sharing',
-      color: 'from-amber-400 to-orange-600',
-      hex: '#ea580c',
+      color: 'from-amber-500 to-orange-700',
+      hex: '#c2410c', // Orange pekat
       label: '4'
     },
     {
       id: '5',
       name: 'Kelas 5',
       link: 'https://docs.google.com/spreadsheets/d/1CTR3F1mqzcTMYppMJH68id3lM8T5ofMPfPCmhPUVMk4/edit?usp=sharing',
-      color: 'from-indigo-400 to-blue-700',
-      hex: '#4338ca',
+      color: 'from-indigo-500 to-blue-800',
+      hex: '#3730a3', // Indigo pekat
       label: '5'
     },
     {
       id: '6',
       name: 'Kelas 6',
       link: 'https://docs.google.com/spreadsheets/d/13ylW9o1lZ79WoFyeZqngrmbZCYXvey7L5LOnzni03oc/edit?usp=sharing',
-      color: 'from-red-400 to-red-600',
-      hex: '#dc2626',
+      color: 'from-red-500 to-red-700',
+      hex: '#b91c1c', // Merah tegas
       label: '6'
     }
   ];
@@ -175,85 +175,125 @@ export default function PortalKelas() {
   return (
     <div className="relative min-h-screen font-sans text-slate-800 bg-slate-50 overflow-hidden">
 
-      {/* --- CUSTOM CSS LENGKAP --- */}
+      {/* --- CUSTOM CSS --- */}
       <style>{`
-       /* 1. Animasi Ripple Logo */
-       @keyframes ripple-pulse {
-         0% { transform: scale(0.8); opacity: 0.2; }
-         100% { transform: scale(2.5); opacity: 0; }
-       }
-       .ripple-ring {
-         position: absolute;
-         border-radius: 50%;
-         animation: ripple-pulse 4s cubic-bezier(0.1, 0.7, 1, 0.1) infinite;
-       }
+        /* 1. Animasi Ripple Logo */
+        @keyframes ripple-pulse {
+          0% { transform: scale(0.8); opacity: 0.2; }
+          100% { transform: scale(2.5); opacity: 0; }
+        }
+        .ripple-ring {
+          position: absolute;
+          border-radius: 50%;
+          animation: ripple-pulse 4s cubic-bezier(0.1, 0.7, 1, 0.1) infinite;
+        }
 
-       /* 2. Animasi Garis Kotak Pencarian */
-       @keyframes spin-border {
-         0% { transform: rotate(0deg); }
-         100% { transform: rotate(360deg); }
-       }
-       .spin-container {
-         position: absolute;
-         top: -50%;
-         left: -50%;
-         width: 200%;
-         height: 200%;
-         background: conic-gradient(from 0deg, transparent 40%, var(--glow-color) 100%);
-         animation: spin-border 5s linear infinite;
-         z-index: 0;
-       }
+        /* 2. SOLUSI ANIMASI OUTLINE MASKING KARTU (TEBAL & TEGAS) */
+        @keyframes outline-spin {
+          0% { transform: translate(-50%, -50%) rotate(0deg); }
+          100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
 
-       /* 3. Latar Kartu Transparan Pelangi */
-       @keyframes water-flow {
-         0% { background-position: 0% 50%; }
-         50% { background-position: 100% 50%; }
-         100% { background-position: 0% 50%; }
-       }
-       .floating-rainbow-water {
-         background-color: rgba(255, 255, 255, 0.7);
-         background-image: linear-gradient(135deg,
-           rgba(252, 165, 165, 0.2) 0%,
-           rgba(253, 224, 71, 0.15) 20%,
-           rgba(134, 239, 172, 0.2) 40%,
-           rgba(147, 197, 253, 0.2) 60%,
-           rgba(196, 181, 253, 0.2) 80%,
-           rgba(252, 165, 165, 0.2) 100%
-         );
-         background-size: 150% 150%;
-         animation: water-flow 35s ease-in-out infinite;
-         backdrop-filter: blur(16px);
-         -webkit-backdrop-filter: blur(16px);
-         box-shadow: inset 0 2px 10px rgba(255,255,255,0.8);
-       }
+        .animated-border-mask {
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          padding: 3.5px; /* Ketebalan garis dinaikkan dari 2px menjadi 3.5px */
+          
+          /* Teknik Masking membuang bagian dalam agar garis tepi tetap bersih */
+          -webkit-mask: 
+            linear-gradient(#fff 0 0) content-box, 
+            linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          
+          overflow: hidden;
+          pointer-events: none;
+          z-index: 20;
+        }
 
-       /* 4. Cahaya Emas Luar Kartu (Golden Aura) */
-       @keyframes golden-glow {
-         0%, 100% { box-shadow: 0 0 10px 0 rgba(250, 204, 21, 0); }
-         50% { box-shadow: 0 0 30px 10px rgba(250, 204, 21, 0.35); }
-       }
-       .golden-aura {
-         animation: golden-glow 12s ease-in-out infinite;
-         border: 1px solid rgba(250, 204, 21, 0.4);
-       }
+        .animated-border-mask::before {
+          content: '';
+          position: absolute;
+          top: 50%; 
+          left: 50%;
+          width: 300%; 
+          height: 300%;
+          background: conic-gradient(
+            from 0deg,
+            transparent 30%,
+            var(--glow-color, #0284c7) 100%
+          );
+          animation: outline-spin 5s linear infinite;
+          animation-delay: var(--spin-delay, 0s);
+        }
 
-       /* 5. Animasi Angka Melompat (Soft Bounce) */
-       @keyframes soft-bounce {
-         0%, 100% { transform: translateY(0); }
-         50% { transform: translateY(-12px); }
-       }
+        /* 3. Animasi Garis Kotak Pencarian */
+        @keyframes spin-border {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .spin-container {
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: conic-gradient(from 0deg, transparent 30%, var(--glow-color) 100%);
+          animation: spin-border 5s linear infinite;
+          z-index: 0;
+        }
 
-       /* 6. NEW: Animasi Kartu Diklik (Zoom In Extreme, seperti masuk portal) */
-       .animate-zoom-out {
-         animation: zoom-into-screen 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-         z-index: 50;
-       }
-       @keyframes zoom-into-screen {
-         0% { transform: scale(1); opacity: 1; }
-         15% { transform: scale(0.95); opacity: 1; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); }
-         100% { transform: scale(3); opacity: 0; box-shadow: 0 0 100px rgba(255, 255, 255, 1); }
-       }
-     `}</style>
+        /* 4. Latar Kartu Transparan Pelangi */
+        @keyframes water-flow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .floating-rainbow-water {
+          background-color: rgba(255, 255, 255, 0.7);
+          background-image: linear-gradient(135deg,
+            rgba(252, 165, 165, 0.2) 0%,
+            rgba(253, 224, 71, 0.15) 20%,
+            rgba(134, 239, 172, 0.2) 40%,
+            rgba(147, 197, 253, 0.2) 60%,
+            rgba(196, 181, 253, 0.2) 80%,
+            rgba(252, 165, 165, 0.2) 100%
+          );
+          background-size: 150% 150%;
+          animation: water-flow 35s ease-in-out infinite;
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          box-shadow: inset 0 2px 10px rgba(255,255,255,0.8);
+        }
+
+        /* 5. Cahaya Emas Luar Kartu (Golden Aura) */
+        @keyframes golden-glow {
+          0%, 100% { box-shadow: 0 0 10px 0 rgba(250, 204, 21, 0); }
+          50% { box-shadow: 0 0 30px 10px rgba(250, 204, 21, 0.35); }
+        }
+        .golden-aura {
+          animation: golden-glow 12s ease-in-out infinite;
+          border: 1px solid rgba(250, 204, 21, 0.4);
+        }
+
+        /* 6. Animasi Angka Melompat */
+        @keyframes soft-bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-12px); }
+        }
+
+        /* 7. Animasi Kartu Diklik (Portal Zoom) */
+        .animate-zoom-out {
+          animation: zoom-into-screen 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+          z-index: 50;
+        }
+        @keyframes zoom-into-screen {
+          0% { transform: scale(1); opacity: 1; }
+          15% { transform: scale(0.95); opacity: 1; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); }
+          100% { transform: scale(3); opacity: 0; box-shadow: 0 0 100px rgba(255, 255, 255, 1); }
+        }
+      `}</style>
 
       {/* CANVAS BACKGROUND */}
       <canvas
@@ -286,8 +326,8 @@ export default function PortalKelas() {
 
         {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-16">
-          <div className="relative group overflow-hidden rounded-2xl p-[3px] shadow-md hover:shadow-lg transition-shadow duration-300">
-            <div className="spin-container opacity-60 group-focus-within:opacity-100 transition-opacity duration-500" style={{ '--glow-color': '#0ea5e9' }}></div>
+          <div className="relative group overflow-hidden rounded-2xl p-[3.5px] shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="spin-container opacity-80 group-focus-within:opacity-100 transition-opacity duration-500" style={{ '--glow-color': '#0284c7' }}></div>
 
             <div className="relative z-10 flex items-center bg-white rounded-[13px] w-full h-full">
               <div className="pl-5 flex items-center pointer-events-none">
@@ -316,37 +356,37 @@ export default function PortalKelas() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => {
-                  e.preventDefault(); // NEW: cegah navigasi langsung
-                  setClickedCard(cls.id); // Mulai animasi zoom (1.5 detik)
+                  e.preventDefault();
+                  setClickedCard(cls.id);
 
-                  // Tahan 1.2 detik sebelum membuka link agar animasi terlihat
                   setTimeout(() => {
                     window.open(cls.link, '_blank');
-                    setClickedCard(null); // Kembalikan ke normal
+                    setClickedCard(null);
                   }, 1200);
                 }}
                 className={`group relative rounded-[24px] block transition-transform duration-500 hover:shadow-xl golden-aura ${
                   clickedCard === cls.id ? 'animate-zoom-out' : 'hover:-translate-y-2'
                 }`}
                 style={{
-                  // PENTING: delay negatif (untuk stagger golden-aura) HANYA dipakai
-                  // saat kartu belum diklik. Kalau tetap dipakai saat animate-zoom-out
-                  // aktif, animasi zoom ikut "melompat" ke tengah durasinya dan
-                  // langsung menghilang instan (bug yang bikin kartu selain Kelas 1 tidak smooth).
+                  '--glow-color': cls.hex,
                   animationDelay: clickedCard === cls.id ? '0s' : `-${index * 2.7}s`,
                 }}
               >
+                {/* 1. ANIMASI OUTLINE MASKING KARTU (KONTRASTING & 3.5PX THICK) */}
+                <div 
+                  className="animated-border-mask opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{ '--spin-delay': `-${index * 0.8}s` }}
+                />
 
-                {/* LAPISAN PELANGI PASTEL DENGAN DELAY ACAK */}
+                {/* 2. LAPISAN PELANGI PASTEL & ISI KARTU */}
                 <div
                   className="relative h-full w-full rounded-[22.5px] floating-rainbow-water p-8 flex flex-col justify-between z-10 border border-white/60"
                   style={{ animationDelay: `-${index * 5.3}s` }}
                 >
 
-                  {/* Bagian Atas Kartu: Angka Kelas yang Melompat Acak */}
+                  {/* Bagian Atas Kartu */}
                   <div>
                     <div className="flex justify-between items-start mb-6">
-
                       <div
                         style={{
                           animation: `soft-bounce ${3 + (index % 3) * 0.5}s ease-in-out infinite`,
@@ -359,14 +399,13 @@ export default function PortalKelas() {
                           </span>
                         </div>
                       </div>
-
                     </div>
+
                     <h3 className="text-2xl font-extrabold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
                       {cls.name}
                     </h3>
-                    <p className="text-slate-600 font-medium text-sm">
-                      LHM, Rekap Nilai & Absensi
-                      LHM, Tahfidz, Tahsin & Grafik Akademik
+                    <p className="text-slate-600 font-medium text-sm leading-relaxed">
+                      LHM, Rekap Nilai, Absensi, Tahfidz, Tahsin & Grafik Akademik
                     </p>
                   </div>
 
