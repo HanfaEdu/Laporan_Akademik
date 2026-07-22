@@ -224,7 +224,8 @@ export default function PortalKelas() {
             transparent 30%,
             var(--glow-color, #0284c7) 100%
           );
-          animation: outline-spin 5s linear infinite;
+          /* Kecepatan dikurangi 50% (durasi diperpanjang dari 5s ke 10s) */
+          animation: outline-spin 10s linear infinite;
           animation-delay: var(--spin-delay, 0s);
         }
 
@@ -240,7 +241,8 @@ export default function PortalKelas() {
           width: 200%;
           height: 200%;
           background: conic-gradient(from 0deg, transparent 30%, var(--glow-color) 100%);
-          animation: spin-border 5s linear infinite;
+          /* Kecepatan dikurangi 50% (durasi diperpanjang dari 5s ke 10s) */
+          animation: spin-border 10s linear infinite;
           z-index: 0;
         }
 
