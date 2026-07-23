@@ -320,7 +320,7 @@ export default function PortalKelas() {
                     setClickedCard(null);
                   }, 1200);
                 }}
-                className={`group relative block transition-all duration-300 card-hover-effect ${
+                className={`group relative block rounded-[24px] transition-all duration-300 card-hover-effect ${
                   clickedCard === cls.id ? 'animate-zoom-out' : ''
                 }`}
                 style={{
