@@ -179,8 +179,13 @@ export default function PortalKelas() {
       <style>{`
         /* 1. Animasi Ripple Logo */
         @keyframes ripple-pulse {
-          0% { transform: scale(0.8); opacity: 0.2; }
-          100% { transform: scale(2.5); opacity: 0; }
+          0% { transform: scale(0.8); opacity: 0.8; } /* Opacity awal ditingkatkan */
+          100% { transform: scale(2.2); opacity: 0; }
+        }
+        .ripple-ring {
+          position: absolute;
+          border-radius: 50%;
+          animation: ripple-pulse 3s cubic-bezier(0.1, 0.7, 1, 0.1) infinite; /* Durasi sedikit dipercepat */
         }
         .ripple-ring {
           position: absolute;
@@ -263,13 +268,16 @@ export default function PortalKelas() {
 
         {/* Header Section */}
         <div className="text-center mb-16 flex flex-col items-center mt-8">
-          <div className="relative flex justify-center items-center mb-8 w-28 h-28">
-            <div className="ripple-ring w-full h-full border border-sky-300" style={{ animationDelay: '0s' }}></div>
-            <div className="ripple-ring w-full h-full border border-pink-300" style={{ animationDelay: '1.3s' }}></div>
-            <div className="ripple-ring w-full h-full border border-amber-300" style={{ animationDelay: '2.6s' }}></div>
+          {/* Container dibuat fix rasio 1:1 (w-32 h-32) */}
+          <div className="relative flex justify-center items-center mb-8 w-32 h-32">
+            {/* Garis dipertebal (border-2) dan opacity ditingkatkan di keyframes */}
+            <div className="ripple-ring w-full h-full border-2 border-sky-400" style={{ animationDelay: '0s' }}></div>
+            <div className="ripple-ring w-full h-full border-2 border-pink-400" style={{ animationDelay: '1s' }}></div>
+            <div className="ripple-ring w-full h-full border-2 border-amber-400" style={{ animationDelay: '2s' }}></div>
 
-            <div className="relative z-10 bg-white p-3 rounded-full shadow-lg border-2 border-white">
-              <img src="/logo.png" alt="Logo SD Yaumi Fatimah Kudus" className="w-24 h-24 object-contain rounded-full" />
+            {/* Container putih logo juga rasio 1:1, p-2 untuk space yang pas */}
+            <div className="relative z-10 bg-white p-2 rounded-full shadow-xl border-4 border-white flex items-center justify-center w-full h-full">
+              <img src="/logo.png" alt="Logo SD Yaumi Fatimah Kudus" className="w-full h-full object-contain rounded-full" />
             </div>
           </div>
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl text-slate-800 drop-shadow-sm mb-2">
