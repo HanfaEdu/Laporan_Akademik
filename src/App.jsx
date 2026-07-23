@@ -188,48 +188,7 @@ export default function PortalKelas() {
           animation: ripple-pulse 4s cubic-bezier(0.1, 0.7, 1, 0.1) infinite;
         }
 
-        /* 2. SOLUSI ANIMASI OUTLINE MASKING KARTU (TEBAL & TEGAS) */
-        @keyframes outline-spin {
-          0% { transform: translate(-50%, -50%) rotate(0deg); }
-          100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        .animated-border-mask {
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 3.5px; /* Ketebalan garis dinaikkan dari 2px menjadi 3.5px */
-          
-          /* Teknik Masking membuang bagian dalam agar garis tepi tetap bersih */
-          -webkit-mask: 
-            linear-gradient(#fff 0 0) content-box, 
-            linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          
-          overflow: hidden;
-          pointer-events: none;
-          z-index: 20;
-        }
-
-        .animated-border-mask::before {
-          content: '';
-          position: absolute;
-          top: 50%; 
-          left: 50%;
-          width: 300%; 
-          height: 300%;
-          background: conic-gradient(
-            from 0deg,
-            transparent 30%,
-            var(--glow-color, #0284c7) 100%
-          );
-          /* Kecepatan diperlambat menjadi 15 detik agar tidak pusing */
-          animation: outline-spin 30s linear infinite;
-          animation-delay: var(--spin-delay, 0s);
-        }
-
-        /* 3. Animasi Garis Kotak Pencarian */
+        /* 2. Animasi Garis Kotak Pencarian (Tetap Dipertahankan) */
         @keyframes spin-border {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
@@ -241,12 +200,11 @@ export default function PortalKelas() {
           width: 200%;
           height: 200%;
           background: conic-gradient(from 0deg, transparent 30%, var(--glow-color) 100%);
-          /* Kecepatan diperlambat menjadi 15 detik */
           animation: spin-border 15s linear infinite;
           z-index: 0;
         }
 
-        /* 4. Latar Kartu Transparan Pelangi */
+        /* 3. Latar Kartu Transparan Pelangi */
         @keyframes water-flow {
           0% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
@@ -269,23 +227,13 @@ export default function PortalKelas() {
           box-shadow: inset 0 2px 10px rgba(255,255,255,0.8);
         }
 
-        /* 5. Cahaya Emas Luar Kartu (Golden Aura) */
-        @keyframes golden-glow {
-          0%, 100% { box-shadow: 0 0 10px 0 rgba(250, 204, 21, 0); }
-          50% { box-shadow: 0 0 30px 10px rgba(250, 204, 21, 0.35); }
-        }
-        .golden-aura {
-          animation: golden-glow 12s ease-in-out infinite;
-          border: 1px solid rgba(250, 204, 21, 0.4);
-        }
-
-        /* 6. Animasi Angka Melompat */
+        /* 4. Animasi Angka Melompat */
         @keyframes soft-bounce {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-12px); }
         }
 
-        /* 7. Animasi Kartu Diklik (Portal Zoom) */
+        /* 5. Animasi Kartu Diklik (Portal Zoom) */
         .animate-zoom-out {
           animation: zoom-into-screen 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
           z-index: 50;
@@ -294,6 +242,12 @@ export default function PortalKelas() {
           0% { transform: scale(1); opacity: 1; }
           15% { transform: scale(0.95); opacity: 1; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); }
           100% { transform: scale(3); opacity: 0; box-shadow: 0 0 100px rgba(255, 255, 255, 1); }
+        }
+        
+        /* 6. Efek Hover Shadow Kartu Kustom */
+        .card-hover-effect:hover {
+          box-shadow: 0 10px 25px -5px var(--glow-color), 0 8px 10px -6px var(--glow-color);
+          transform: translateY(-8px);
         }
       `}</style>
 
@@ -366,24 +320,21 @@ export default function PortalKelas() {
                     setClickedCard(null);
                   }, 1200);
                 }}
-                className={`group relative rounded-[24px] block transition-transform duration-500 hover:shadow-xl golden-aura ${
-                  clickedCard === cls.id ? 'animate-zoom-out' : 'hover:-translate-y-2'
+                className={`group relative block transition-all duration-300 card-hover-effect ${
+                  clickedCard === cls.id ? 'animate-zoom-out' : ''
                 }`}
                 style={{
-                  '--glow-color': cls.hex,
+                  '--glow-color': `${cls.hex}80`, /* Opacity 50% untuk shadow hover */
                   animationDelay: clickedCard === cls.id ? '0s' : `-${index * 2.7}s`,
                 }}
               >
-                {/* 1. ANIMASI OUTLINE MASKING KARTU (KONTRASTING & 3.5PX THICK) */}
-                <div 
-                  className="animated-border-mask opacity-70 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ '--spin-delay': `-${index * 0.8}s` }}
-                />
-
-                {/* 2. LAPISAN PELANGI PASTEL & ISI KARTU */}
+                {/* LAPISAN PELANGI PASTEL & ISI KARTU DENGAN OUTLINE STATIS */}
                 <div
-                  className="relative h-full w-full rounded-[22.5px] floating-rainbow-water p-8 flex flex-col justify-between z-10 border border-white/60"
-                  style={{ animationDelay: `-${index * 5.3}s` }}
+                  className="relative h-full w-full rounded-[24px] floating-rainbow-water p-8 flex flex-col justify-between z-10 transition-shadow duration-300 bg-white/40"
+                  style={{ 
+                    animationDelay: `-${index * 5.3}s`,
+                    border: `3.5px solid ${cls.hex}`, /* Garis tegas sesuai warna kelas */
+                  }}
                 >
 
                   {/* Bagian Atas Kartu */}
