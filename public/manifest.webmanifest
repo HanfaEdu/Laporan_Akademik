@@ -1,7 +1,7 @@
 {
-  "name": "SOP 3 Menit - SD Yaumi Fatimah",
-  "short_name": "SOP 3 Menit",
-  "description": "Asisten Kinerja Guru SD Yaumi Fatimah",
+  "name": "Laporan Akademik - SD Yaumi Fatimah",
+  "short_name": "LHM",
+  "description": "Laporan Akademik SD Yaumi Fatimah",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",
