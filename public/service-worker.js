@@ -1,8 +1,8 @@
 // =============================================
-// SERVICE WORKER — SOP 3 Menit Yaumi Fatimah
+// SERVICE WORKER — LHM Yaumi Fatimah
 // Versi: ganti angka ini setiap ada update besar
 // =============================================
-const CACHE_NAME = 'sop3menit-v1';
+const CACHE_NAME = 'LHM-v1';
 
 // File-file yang disimpan agar bisa dibuka offline
 const CACHED_ASSETS = [
