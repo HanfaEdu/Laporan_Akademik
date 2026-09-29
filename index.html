@@ -292,6 +292,8 @@
           card.classList.add('animate-zoom-out');
           setTimeout(() => {
             window.location.href = cls.link;
+            // Cadangan: jika halaman tidak benar-benar berpindah, tampilkan lagi kartunya
+            setTimeout(() => card.classList.remove('animate-zoom-out'), 2000);
           }, 1100);
         });
 
@@ -301,6 +303,17 @@
 
     searchInput.addEventListener('input', (e) => renderCards(e.target.value));
     renderCards();
+
+    // Saat kembali dari spreadsheet (tombol Back, atau menutup aplikasi Google
+    // Sheets di HP), halaman bisa tampil lagi dengan kartu yang sudah menghilang.
+    // Kembalikan kartunya setiap kali halaman terlihat lagi.
+    function resetCards() {
+      document.querySelectorAll('.animate-zoom-out').forEach(el => el.classList.remove('animate-zoom-out'));
+    }
+    window.addEventListener('pageshow', resetCards);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') resetCards();
+    });
 
     // 3. CANVAS PARTIKEL BACKGROUND
     const canvas = document.getElementById('bgCanvas');
